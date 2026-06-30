@@ -1,0 +1,827 @@
+<!doctype html>
+<html lang="zh-CN"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>[[REPORT_TITLE]]</title>
+<style>
+    /* ===== CSS Variables – Refined Palette ===== */
+    :root {
+      --ink: #141e2e;
+      --text: #2e3a50;
+      --muted: #5c6b82;
+      --line: #d9e1ed;
+      --line-light: #e8edf5;
+      --paper: #ffffff;
+      --wash: #f4f6fa;
+      --blue: #1e4fd4;
+      --blue-dark: #1439a3;
+      --green: #0a6e51;
+      --amber: #8e5e00;
+      --amber-dark: #6b4500;
+      --red: #b04444;
+      --soft-blue: #eaf1fd;
+      --soft-green: #ebf7f2;
+      --soft-amber: #fef8ed;
+      --soft-red: #fef2f2;
+      --radius: 10px;
+      --radius-sm: 6px;
+      --radius-lg: 14px;
+      --shadow-sm: 0 2px 8px rgba(20, 30, 46, .04);
+      --shadow: 0 4px 20px rgba(20, 30, 46, .06), 0 1px 3px rgba(20, 30, 46, .04);
+      --shadow-lg: 0 12px 40px rgba(20, 30, 46, .08), 0 2px 6px rgba(20, 30, 46, .03);
+      --shadow-xl: 0 20px 60px rgba(20, 30, 46, .1), 0 4px 12px rgba(20, 30, 46, .04);
+      --body: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+      --display: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+      --transition: 220ms cubic-bezier(0.25, 0.1, 0.25, 1);
+      --transition-slow: 380ms cubic-bezier(0.25, 0.1, 0.25, 1);
+    }
+
+    /* ===== Reset & Base ===== */
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--wash);
+      background-image:
+        radial-gradient(ellipse at 20% 10%, rgba(30, 79, 212, .015) 0%, transparent 70%),
+        radial-gradient(ellipse at 80% 50%, rgba(10, 110, 81, .01) 0%, transparent 60%);
+      font-family: var(--body);
+      font-size: 16px;
+      line-height: 1.72;
+      letter-spacing: 0;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    a { color: inherit; text-decoration: none; transition: color var(--transition); }
+    a:hover { color: var(--blue); }
+
+    /* ===== Progress Bar ===== */
+    .progress {
+      position: fixed;
+      inset: 0 auto auto 0;
+      width: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--blue), #3b82f6, var(--green), var(--amber));
+      z-index: 40;
+      transition: height var(--transition);
+      box-shadow: 0 1px 3px rgba(30, 79, 212, .18);
+    }
+
+    /* ===== Hero Header ===== */
+    .hero {
+      background: var(--paper);
+      border-bottom: 1px solid var(--line);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 85% 30%, rgba(30, 79, 212, .03) 0%, transparent 55%),
+        radial-gradient(circle at 15% 70%, rgba(10, 110, 81, .025) 0%, transparent 45%);
+      pointer-events: none;
+    }
+    .hero-inner {
+      width: min(1260px, calc(100% - 42px));
+      margin: 0 auto;
+      padding: 62px 0 42px;
+      position: relative;
+      z-index: 1;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--green);
+      font-size: 14px;
+      font-weight: 750;
+      margin-bottom: 20px;
+      letter-spacing: .02em;
+    }
+    .eyebrow::before {
+      content: "";
+      width: 36px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--green), rgba(10, 110, 81, .3));
+      display: inline-block;
+      border-radius: 1px;
+    }
+    h1 {
+      margin: 0;
+      max-width: 1120px;
+      font-family: var(--display);
+      font-size: clamp(38px, 5vw, 66px);
+      line-height: 1.1;
+      font-weight: 850;
+    }
+    .lead {
+      max-width: none;
+      margin: 24px 0 0;
+      color: var(--text);
+      font-size: 18.5px;
+      line-height: 1.85;
+    }
+
+    /* ===== Chapter Tabs ===== */
+    .chapter-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 30px;
+    }
+    .chapter-tabs.cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .chapter-tabs a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 56px;
+      padding: 14px 18px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fafbfd;
+      color: var(--ink);
+      font-size: 15.5px;
+      font-weight: 780;
+      box-shadow: var(--shadow-sm);
+      transition: all var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+    .chapter-tabs a::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(30, 79, 212, .06), transparent);
+      opacity: 0;
+      transition: opacity var(--transition);
+    }
+    .chapter-tabs a:hover {
+      border-color: rgba(30, 79, 212, .3);
+      background: #f4f7fe;
+      transform: translateY(-1px);
+      box-shadow: var(--shadow);
+    }
+    .chapter-tabs a:hover::before { opacity: 1; }
+    .chapter-tabs a.active {
+      color: #fff;
+      background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+      border-color: transparent;
+      box-shadow: 0 8px 24px rgba(30, 79, 212, .25);
+      transform: translateY(-2px);
+    }
+    .chapter-tabs a.active::before { display: none; }
+
+    /* ===== Quick Nav Pills ===== */
+    .quick-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 28px;
+    }
+    .quick-nav a {
+      display: inline-flex;
+      align-items: center;
+      height: 36px;
+      padding: 0 14px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      color: var(--text);
+      font-size: 13.5px;
+      font-weight: 700;
+      transition: all var(--transition);
+      box-shadow: var(--shadow-sm);
+    }
+    .quick-nav a:hover {
+      border-color: rgba(30, 79, 212, .35);
+      color: var(--blue);
+      background: var(--soft-blue);
+      box-shadow: var(--shadow);
+      transform: translateY(-1px);
+    }
+
+    /* ===== Main Content & View Switching ===== */
+    /* Set data-active-view on <main> to show only matching sections */
+    main[data-active-view="[[VIEW_1_KEY]]"] section[data-view]:not([data-view="[[VIEW_1_KEY]]"]),
+    main[data-active-view="[[VIEW_2_KEY]]"] section[data-view]:not([data-view="[[VIEW_2_KEY]]"]),
+    main[data-active-view="[[VIEW_3_KEY]]"] section[data-view]:not([data-view="[[VIEW_3_KEY]]"]) {
+      display: none;
+    }
+    main {
+      width: min(1180px, calc(100% - 42px));
+      margin: 0 auto;
+    }
+    section {
+      padding: 56px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    section:last-child { border-bottom: 0; }
+    h2 {
+      margin: 0 0 18px;
+      font-family: var(--display);
+      font-size: clamp(30px, 3.2vw, 44px);
+      line-height: 1.2;
+      font-weight: 850;
+    }
+    h3 {
+      margin: 32px 0 12px;
+      font-size: 23px;
+      line-height: 1.32;
+      font-weight: 800;
+    }
+    h4 {
+      margin: 24px 0 10px;
+      font-size: 18.5px;
+      font-weight: 780;
+    }
+    p {
+      margin: 10px 0;
+      color: var(--text);
+      font-size: 15.5px;
+      line-height: 1.75;
+    }
+    .section-note {
+      max-width: 1040px;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.78;
+    }
+
+    /* ===== KPI Dashboard Cards ===== */
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 26px;
+    }
+    .kpi-row.cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .kpi-row.cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .kpi-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--paper);
+      padding: 22px 18px;
+      box-shadow: var(--shadow-sm);
+      transition: all var(--transition);
+    }
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+    .kpi-card .label {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 720;
+      margin-bottom: 8px;
+      letter-spacing: .02em;
+    }
+    .kpi-card .value {
+      font-family: var(--display);
+      font-size: 32px;
+      font-weight: 850;
+      line-height: 1.15;
+    }
+    .kpi-card .value.up { color: var(--green); }
+    .kpi-card .value.warn { color: var(--amber); }
+    .kpi-card .sub {
+      color: var(--muted);
+      font-size: 13.5px;
+      margin-top: 6px;
+      line-height: 1.5;
+    }
+
+    /* ===== Card Grids ===== */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 20px;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 22px;
+    }
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 22px;
+    }
+
+    /* ===== Base Card ===== */
+    .card, .b-card, .biz-box {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--paper);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+      transition: all var(--transition);
+    }
+    .card:hover, .b-card:hover, .biz-box:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+    .b-card.blue { background: var(--soft-blue); border-color: rgba(30, 79, 212, .1); }
+    .b-card.green { background: var(--soft-green); border-color: rgba(10, 110, 81, .1); }
+    .b-card.amber { background: var(--soft-amber); border-color: rgba(142, 94, 0, .1); }
+    .b-card.red { background: var(--soft-red); border-color: rgba(176, 68, 68, .1); }
+    .card h3, .b-card h3 { margin-top: 0; }
+
+    /* ===== Tagline ===== */
+    .tagline {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 720;
+      letter-spacing: .01em;
+    }
+
+    /* ===== Tables ===== */
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin: 20px 0;
+      overflow: hidden;
+      border-radius: var(--radius);
+      background: #fff;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-sm);
+    }
+    th, td {
+      padding: 13px 14px;
+      border-bottom: 1px solid var(--line-light);
+      border-right: 1px solid var(--line-light);
+      vertical-align: top;
+      text-align: left;
+      font-size: 14px;
+      line-height: 1.65;
+    }
+    th {
+      background: #f1f5f9;
+      color: var(--ink);
+      font-weight: 780;
+      font-size: 13.5px;
+      letter-spacing: .01em;
+    }
+    tr:last-child td { border-bottom: 0; }
+    th:last-child, td:last-child { border-right: 0; }
+    tbody tr { transition: background var(--transition); }
+    tbody tr:hover { background: #fafcfe; }
+    ul, ol {
+      margin: 10px 0 0 22px;
+      padding: 0;
+      color: var(--text);
+    }
+    li { margin: 7px 0; line-height: 1.68; }
+
+    /* ===== Collapsible Panels ===== */
+    details.panel {
+      margin-top: 16px;
+      padding: 0;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--paper);
+      box-shadow: var(--shadow-sm);
+    }
+    details.panel summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 17px 20px;
+      color: var(--ink);
+      font-weight: 800;
+      font-size: 15.5px;
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      user-select: none;
+      transition: background var(--transition);
+    }
+    details.panel summary:hover { background: #fafcfd; }
+    details.panel summary::-webkit-details-marker { display: none; }
+    details.panel summary::after {
+      content: "展开 ▼";
+      color: var(--blue);
+      font-size: 12.5px;
+      font-weight: 750;
+      transition: transform var(--transition);
+    }
+    details.panel[open] summary::after { content: "收起 ▲"; }
+    details.panel[open] summary {
+      border-bottom: 1px solid var(--line-light);
+      background: #fafcfd;
+    }
+    .detail-body {
+      padding: 20px;
+      border-top: 1px solid var(--line-light);
+    }
+
+    /* ===== Quote / Callout ===== */
+    .quote {
+      margin: 22px 0;
+      padding: 20px 22px;
+      border-left: 4px solid var(--green);
+      background: linear-gradient(90deg, var(--soft-green), rgba(235, 247, 242, .4));
+      color: var(--text);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      font-size: 15.5px;
+      line-height: 1.75;
+    }
+    .quote.warn {
+      border-left-color: var(--amber);
+      background: linear-gradient(90deg, var(--soft-amber), rgba(254, 248, 237, .4));
+    }
+    .quote.risk {
+      border-left-color: var(--red);
+      background: linear-gradient(90deg, var(--soft-red), rgba(254, 242, 242, .4));
+    }
+
+    /* ===== Risk Alert Cards ===== */
+    .risk-alert {
+      border: 1px solid rgba(176, 68, 68, .25);
+      border-left: 4px solid var(--red);
+      border-radius: var(--radius);
+      background: #fff;
+      padding: 18px 20px;
+      box-shadow: var(--shadow-sm);
+    }
+    .risk-alert b {
+      display: block;
+      color: var(--red);
+      font-size: 14px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      letter-spacing: .02em;
+    }
+    .risk-alert span {
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    /* ===== Timeline ===== */
+    .timeline {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .step {
+      min-height: 164px;
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fafcfd;
+      box-shadow: var(--shadow-sm);
+      transition: all var(--transition);
+    }
+    .step:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+    .step small {
+      display: inline-block;
+      margin-bottom: 10px;
+      color: var(--blue);
+      font-weight: 800;
+      font-size: 13px;
+      letter-spacing: .02em;
+      text-transform: uppercase;
+    }
+    .step b {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 16.5px;
+      font-weight: 780;
+    }
+    .step span {
+      display: block;
+      color: var(--muted);
+      font-size: 13.5px;
+      line-height: 1.6;
+    }
+
+    /* ===== Biz Sections ===== */
+    .biz-section {
+      display: grid;
+      grid-template-columns: 270px minmax(0, 1fr);
+      gap: 22px;
+      align-items: start;
+      margin-top: 30px;
+      padding-top: 28px;
+      border-top: 1px solid var(--line);
+    }
+    .biz-title {
+      position: sticky;
+      top: 80px;
+    }
+    .biz-title .num {
+      color: var(--blue);
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: .03em;
+    }
+    .biz-title h3 { margin: 6px 0 10px; }
+    .biz-title p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+    .biz-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .biz-box b { margin-bottom: 8px; font-size: 16.5px; font-weight: 780; display: block; }
+    .biz-box span { color: var(--muted); font-size: 14px; line-height: 1.65; }
+    .biz-box ul { font-size: 14.5px; }
+
+    /* ===== Pill Row ===== */
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .pill {
+      display: inline-flex;
+      padding: 5px 11px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+      transition: all var(--transition);
+    }
+    .pill:hover { border-color: var(--blue); color: var(--blue); }
+
+    /* ===== Scroll-Reveal Animation ===== */
+    @keyframes fadeUpIn {
+      from { opacity: .85; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    section {
+      animation: fadeUpIn .4s cubic-bezier(0.33, 0.1, 0.25, 1) both;
+    }
+    section:nth-child(2) { animation-delay: .03s; }
+    section:nth-child(3) { animation-delay: .06s; }
+    section:nth-child(4) { animation-delay: .09s; }
+    section:nth-child(5) { animation-delay: .12s; }
+    section:nth-child(6) { animation-delay: .15s; }
+    section:nth-child(7) { animation-delay: .18s; }
+    section:nth-child(8) { animation-delay: .21s; }
+
+    @keyframes cardIn {
+      from { opacity: .8; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .kpi-row .kpi-card,
+    .grid-3 .card,
+    .grid-3 .b-card,
+    .grid-2 .biz-box,
+    .biz-grid .biz-box {
+      animation: cardIn .35s cubic-bezier(0.33, 0.1, 0.25, 1) both;
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 980px) {
+      .kpi-row, .grid-2, .grid-3, .grid-4, .biz-grid, .timeline {
+        grid-template-columns: 1fr;
+      }
+      .chapter-tabs { grid-template-columns: 1fr; }
+      .biz-section {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+      .biz-title { position: static; }
+      .hero-inner { padding-top: 48px; }
+      table { display: block; overflow-x: auto; }
+    }
+
+    @media (max-width: 640px) {
+      .hero-inner { padding: 40px 0 30px; }
+      h1 { font-size: 28px; }
+      .lead { font-size: 15px; }
+      section { padding: 32px 0; }
+      .kpi-card .value { font-size: 24px; }
+    }
+
+    @media print {
+      .progress { display: none; }
+      body { background: #fff; }
+      section { break-inside: avoid; padding: 24px 0; animation: none; }
+      .card, .b-card, .biz-box, .kpi-card, .step {
+        animation: none;
+        box-shadow: none;
+        break-inside: avoid;
+      }
+      details.panel[open] .detail-body { display: block; }
+    }
+  </style>
+</head>
+<body>
+  <div class="progress" id="progress"></div>
+
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="eyebrow">[[EYEBROW_LABEL]]</div>
+      <h1>[[REPORT_HEADLINE]]</h1>
+      <p class="lead">[[REPORT_LEAD]]</p>
+      <nav class="chapter-tabs [[TAB_COLS_CLASS]]">
+        <a class="active" href="#[[VIEW_1_ANCHOR]]" data-view-toggle="[[VIEW_1_KEY]]">[[VIEW_1_LABEL]]</a>
+        <a href="#[[VIEW_2_ANCHOR]]" data-view-toggle="[[VIEW_2_KEY]]">[[VIEW_2_LABEL]]</a>
+        <a href="#[[VIEW_3_ANCHOR]]" data-view-toggle="[[VIEW_3_KEY]]">[[VIEW_3_LABEL]]</a>
+        <!-- Add more tabs here if needed -->
+      </nav>
+    </div>
+  </header>
+
+  <main data-active-view="[[VIEW_1_KEY]]">
+
+    <!-- ============================================================ -->
+    <!-- VIEW 1: [[VIEW_1_LABEL]]                                    -->
+    <!-- ============================================================ -->
+    <section id="[[VIEW_1_ANCHOR]]" data-view="[[VIEW_1_KEY]]">
+      <h2>[[VIEW_1_H2]]</h2>
+      <p class="section-note">[[VIEW_1_NOTE]]</p>
+
+      <!-- KPI Dashboard Row -->
+      <div class="kpi-row [[KPI_COLS_CLASS]]">
+        <div class="kpi-card">
+          <div class="label">[[KPI_1_LABEL]]</div>
+          <div class="value [[KPI_1_COLOR]]">[[KPI_1_VALUE]]</div>
+          <div class="sub">[[KPI_1_SUB]]</div>
+        </div>
+        <div class="kpi-card">
+          <div class="label">[[KPI_2_LABEL]]</div>
+          <div class="value [[KPI_2_COLOR]]">[[KPI_2_VALUE]]</div>
+          <div class="sub">[[KPI_2_SUB]]</div>
+        </div>
+        <!-- Add more kpi-cards here (3-5 recommended) -->
+      </div>
+
+      <!-- Summary Cards (3-col) -->
+      <div class="grid-3">
+        <div class="b-card blue">
+          <h3>[[SUMMARY_CARD_1_TITLE]]</h3>
+          <p>[[SUMMARY_CARD_1_BODY]]</p>
+        </div>
+        <div class="b-card green">
+          <h3>[[SUMMARY_CARD_2_TITLE]]</h3>
+          <p>[[SUMMARY_CARD_2_BODY]]</p>
+        </div>
+        <div class="b-card amber">
+          <h3>[[SUMMARY_CARD_3_TITLE]]</h3>
+          <p>[[SUMMARY_CARD_3_BODY]]</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- VIEW 2: [[VIEW_2_LABEL]]                                    -->
+    <!-- ============================================================ -->
+    <section id="[[VIEW_2_ANCHOR]]" data-view="[[VIEW_2_KEY]]">
+      <h2>[[VIEW_2_H2]]</h2>
+      <p class="section-note">[[VIEW_2_NOTE]]</p>
+
+      <!-- Optional: Quick Nav for long views -->
+      <!--
+      <nav class="quick-nav">
+        <a href="#[[SUB_SECTION_1]]">[[SUB_LABEL_1]]</a>
+        <a href="#[[SUB_SECTION_2]]">[[SUB_LABEL_2]]</a>
+      </nav>
+      -->
+
+      <!-- Example: Biz Section (per-unit drill-down) -->
+      <div class="biz-section" id="[[SUB_SECTION_1]]">
+        <aside class="biz-title">
+          <div class="num">01</div>
+          <h3>[[UNIT_1_NAME]]</h3>
+          <p>[[UNIT_1_DESC]]</p>
+        </aside>
+        <div>
+          <!-- Per-unit KPI row (3 cols) -->
+          <div class="kpi-row cols-3" style="margin-top:0;">
+            <div class="kpi-card">
+              <div class="label">[[UNIT_1_KPI_1_LABEL]]</div>
+              <div class="value [[UNIT_1_KPI_1_COLOR]]">[[UNIT_1_KPI_1_VALUE]]</div>
+              <div class="sub">[[UNIT_1_KPI_1_SUB]]</div>
+            </div>
+            <!-- Add more kpi-cards -->
+          </div>
+          <!-- Biz grid cards -->
+          <div class="biz-grid">
+            <div class="biz-box"><b>[[UNIT_1_CARD_1_TITLE]]</b><span>[[UNIT_1_CARD_1_BODY]]</span></div>
+            <div class="biz-box"><b>[[UNIT_1_CARD_2_TITLE]]</b><span>[[UNIT_1_CARD_2_BODY]]</span></div>
+          </div>
+          <!-- Collapsible detail panel -->
+          <details class="panel">
+            <summary>[[UNIT_1_PANEL_TITLE]]</summary>
+            <div class="detail-body">
+              <table>
+                <thead><tr><th>[[COL_1]]</th><th>[[COL_2]]</th><th>[[COL_3]]</th></tr></thead>
+                <tbody>
+                  <tr><td>[[ROW_1_COL_1]]</td><td>[[ROW_1_COL_2]]</td><td>[[ROW_1_COL_3]]</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Add more .biz-section blocks for each business unit / topic -->
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- VIEW 3: [[VIEW_3_LABEL]]                                    -->
+    <!-- ============================================================ -->
+    <section id="[[VIEW_3_ANCHOR]]" data-view="[[VIEW_3_KEY]]">
+      <h2>[[VIEW_3_H2]]</h2>
+      <p class="section-note">[[VIEW_3_NOTE]]</p>
+
+      <!-- Example: Risk Alerts (2-col) -->
+      <div class="grid-2">
+        <div class="risk-alert">
+          <b>[[RISK_1_TITLE]]</b>
+          <span>[[RISK_1_BODY]]</span>
+        </div>
+        <div class="risk-alert">
+          <b>[[RISK_2_TITLE]]</b>
+          <span>[[RISK_2_BODY]]</span>
+        </div>
+      </div>
+
+      <!-- Example: Timeline -->
+      <!--
+      <div class="timeline">
+        <div class="step"><small>01</small><b>[[STEP_1_TITLE]]</b><span>[[STEP_1_DESC]]</span></div>
+        <div class="step"><small>02</small><b>[[STEP_2_TITLE]]</b><span>[[STEP_2_DESC]]</span></div>
+        <div class="step"><small>03</small><b>[[STEP_3_TITLE]]</b><span>[[STEP_3_DESC]]</span></div>
+        <div class="step"><small>04</small><b>[[STEP_4_TITLE]]</b><span>[[STEP_4_DESC]]</span></div>
+        <div class="step"><small>05</small><b>[[STEP_5_TITLE]]</b><span>[[STEP_5_DESC]]</span></div>
+      </div>
+      -->
+    </section>
+
+  </main>
+
+  <script>
+    const progress = document.getElementById('progress');
+
+    window.addEventListener('scroll', () => {
+      const doc = document.documentElement;
+      const max = doc.scrollHeight - doc.clientHeight;
+      const ratio = max > 0 ? doc.scrollTop / max : 0;
+      progress.style.width = `${Math.min(1, Math.max(0, ratio)) * 100}%`;
+    });
+
+    function setActiveView(view, updateHash) {
+      const main = document.querySelector('main');
+      if (!main) return;
+      main.dataset.activeView = view;
+      document.querySelectorAll('[data-view-toggle]').forEach((tab) => {
+        tab.classList.toggle('active', tab.dataset.viewToggle === view);
+      });
+      if (updateHash) {
+        const targets = {
+          [[VIEW_1_KEY]]: '[[VIEW_1_ANCHOR]]',
+          [[VIEW_2_KEY]]: '[[VIEW_2_ANCHOR]]',
+          [[VIEW_3_KEY]]: '[[VIEW_3_ANCHOR]]'
+        };
+        history.replaceState(null, '', `#${targets[view] || view}`);
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    document.addEventListener('click', (event) => {
+      const tab = event.target.closest('[data-view-toggle]');
+      if (!tab) return;
+      event.preventDefault();
+      setActiveView(tab.dataset.viewToggle, true);
+    });
+
+    const initialHash = window.location.hash.replace('#', '');
+    const viewMap = {
+      '[[VIEW_1_ANCHOR]]': '[[VIEW_1_KEY]]',
+      '[[VIEW_2_ANCHOR]]': '[[VIEW_2_KEY]]',
+      '[[VIEW_3_ANCHOR]]': '[[VIEW_3_KEY]]'
+    };
+    const initialView = viewMap[initialHash] || '[[VIEW_1_KEY]]';
+    setActiveView(initialView, false);
+  </script>
+</body>
+</html>
