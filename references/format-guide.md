@@ -460,12 +460,86 @@ the attribute and smooth-scrolls to top.
 - `section` → `padding: 32px 0`
 - `.kpi-card .value` → `font-size: 24px`
 
-### Print
-- Hide `.progress`
-- White background
-- `animation: none` on all cards and sections
-- `break-inside: avoid` on cards
-- `details.panel[open] .detail-body` → `display: block`
+### Print (PDF Export)
+
+The print stylesheet is designed to produce a clean, proportionally correct PDF
+via browser Print → Save as PDF. Key design decisions:
+
+```css
+@media print {
+  /* Landscape A4 — gives enough width for the 1180px content */
+  @page {
+    size: landscape;
+    margin: 14mm 12mm 14mm 12mm;
+  }
+
+  /* Force color & background rendering (browsers strip them by default) */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Hide interactive-only elements */
+  .progress, .chapter-tabs, .quick-nav, .pill-row { display: none; }
+
+  /* Clean white page */
+  body { background: #fff; background-image: none; }
+
+  /* Each <section> = one logical page */
+  section {
+    break-before: page;
+    break-inside: avoid;
+    padding: 18px 0;
+    animation: none;
+    border-bottom: 0;
+  }
+  section:first-of-type { break-before: avoid; }
+
+  /* Headings stick to their content */
+  h2, h3, h4 { break-after: avoid; }
+
+  /* Cards, panels, biz-sections — never split */
+  .card, .b-card, .biz-box, .kpi-card, .step,
+  .risk-alert, details.panel, .biz-section {
+    animation: none;
+    box-shadow: none;
+    break-inside: avoid;
+  }
+
+  /* Grid rows stay together */
+  .kpi-row, .grid-2, .grid-3, .grid-4, .biz-grid { break-inside: avoid; }
+
+  /* Table: repeat header on each page, don't split rows */
+  table tr { break-inside: avoid; }
+  table thead { display: table-header-group; }
+
+  /* Force all collapsible panels open */
+  details.panel:not([open]) .detail-body { display: block; }
+  details.panel summary::after { content: none; }
+
+  /* Hero compact in print */
+  .hero { border-bottom: 2px solid var(--line); }
+  .hero-inner { padding: 28px 0 24px; }
+  .hero::after { background: none; }
+
+  /* Un-stick sidebars */
+  .biz-title { position: static; }
+}
+```
+
+**Page break strategy:**
+- Each `<section>` starts on a new page (`break-before: page`)
+- First section is exception (no forced break before it — it follows the hero)
+- All cards, panels, and grids use `break-inside: avoid` to prevent splitting
+- Table headers repeat across pages (`display: table-header-group`)
+- Collapsible panels are auto-expanded so all content prints
+
+**Layout preservation:**
+- Landscape orientation preserves the 1180px content width without scaling
+- 12–14mm margins keep reasonable whitespace
+- `print-color-adjust: exact` preserves the semantic color system (blue/green/amber/red cards)
+- Grid proportions are unchanged — no reflow, no column collapse
+- Shadows are removed (don't print well) but borders remain
 
 ---
 

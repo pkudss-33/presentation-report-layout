@@ -621,15 +621,74 @@
     }
 
     @media print {
-      .progress { display: none; }
-      body { background: #fff; }
-      section { break-inside: avoid; padding: 24px 0; animation: none; }
-      .card, .b-card, .biz-box, .kpi-card, .step {
+      /* Page setup — landscape for wide content, auto margins */
+      @page {
+        size: landscape;
+        margin: 14mm 12mm 14mm 12mm;
+      }
+
+      /* Force color & background rendering */
+      * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      /* Hide interactive-only elements */
+      .progress, .chapter-tabs, .quick-nav, .pill-row { display: none; }
+
+      /* Clean page background */
+      body {
+        background: #fff;
+        background-image: none;
+      }
+
+      /* Page breaks: each section starts a new page */
+      section {
+        break-before: page;
+        break-inside: avoid;
+        padding: 18px 0;
+        animation: none;
+        border-bottom: 0;
+      }
+      /* First section (hero-adjacent) — no forced break */
+      section:first-of-type { break-before: avoid; }
+
+      /* Sub-sections within long views — avoid orphaned headers */
+      h2 { break-after: avoid; }
+      h3 { break-after: avoid; }
+      h4 { break-after: avoid; }
+
+      /* Keep cards & panels intact — never split across pages */
+      .card, .b-card, .biz-box, .kpi-card, .step,
+      .mission-anchor, .value-step, .mission,
+      .risk-alert, details.panel, .biz-section,
+      .review-work-item, .topic-detail, .nh-card, .link-card {
         animation: none;
         box-shadow: none;
         break-inside: avoid;
       }
-      details.panel[open] .detail-body { display: block; }
+
+      /* Keep grid rows together when possible */
+      .kpi-row, .grid-2, .grid-3, .grid-4,
+      .biz-grid, .timeline, .mission-grid {
+        break-inside: avoid;
+      }
+
+      /* Keep table rows together */
+      table tr { break-inside: avoid; }
+      table thead { display: table-header-group; }
+
+      /* Ensure collapsed panels are open in print */
+      details.panel:not([open]) .detail-body { display: block; }
+      details.panel summary::after { content: none; }
+
+      /* Hero — compact in print */
+      .hero { border-bottom: 2px solid var(--line); }
+      .hero-inner { padding: 28px 0 24px; }
+      .hero::after { background: none; }
+
+      /* Remove sticky positioning */
+      .biz-title { position: static; }
     }
   </style>
 </head>
