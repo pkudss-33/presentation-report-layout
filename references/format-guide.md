@@ -528,18 +528,20 @@ via browser Print → Save as PDF. Key design decisions:
 ```
 
 **Page break strategy:**
-- Each `<section>` starts on a new page (`break-before: page`)
-- First section is exception (no forced break before it — it follows the hero)
-- All cards, panels, and grids use `break-inside: avoid` to prevent splitting
-- Table headers repeat across pages (`display: table-header-group`)
-- Collapsible panels are auto-expanded so all content prints
+- `h2` triggers a new page (`break-before: page`) — natural topic boundary
+- First `h2` in the document skips the break (follows hero naturally)
+- Sections flow naturally — content can span multiple pages within one view
+- Individual cards/kpi-cards/panels use `break-inside: avoid` (never torn)
+- Large containers (biz-section, grid-3, grid-4) can split across pages
+- Only `.kpi-row` stays together (small, 3-5 items) 
 
 **Layout preservation:**
 - Landscape orientation preserves the 1180px content width without scaling
-- 12–14mm margins keep reasonable whitespace
-- `print-color-adjust: exact` preserves the semantic color system (blue/green/amber/red cards)
-- Grid proportions are unchanged — no reflow, no column collapse
-- Shadows are removed (don't print well) but borders remain
+- 10-12mm margins keep reasonable whitespace
+- `print-color-adjust: exact` preserves the semantic color system
+- Grid proportions unchanged — no reflow, no column collapse
+- Shadows removed (don't print well), borders remain
+- `biz-title` sticky positioning removed for print
 
 ---
 

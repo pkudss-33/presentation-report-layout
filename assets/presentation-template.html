@@ -621,10 +621,10 @@
     }
 
     @media print {
-      /* Page setup — landscape for wide content, auto margins */
+      /* Page setup — landscape gives room for 1180px content */
       @page {
         size: landscape;
-        margin: 14mm 12mm 14mm 12mm;
+        margin: 12mm 10mm 12mm 10mm;
       }
 
       /* Force color & background rendering */
@@ -642,45 +642,48 @@
         background-image: none;
       }
 
-      /* Page breaks: each section starts a new page */
+      /* Sections flow naturally — no forced page break on every section */
       section {
-        break-before: page;
-        break-inside: avoid;
-        padding: 18px 0;
+        padding: 14px 0;
         animation: none;
         border-bottom: 0;
       }
-      /* First section (hero-adjacent) — no forced break */
-      section:first-of-type { break-before: avoid; }
 
-      /* Sub-sections within long views — avoid orphaned headers */
-      h2 { break-after: avoid; }
+      /* Page break before each h2 (natural topic boundary) */
+      h2 {
+        break-before: page;
+        break-after: avoid;
+      }
+      section:first-of-type h2 { break-before: avoid; }
       h3 { break-after: avoid; }
       h4 { break-after: avoid; }
 
-      /* Keep cards & panels intact — never split across pages */
+      /* Individual cards and small blocks — don't split */
       .card, .b-card, .biz-box, .kpi-card, .step,
-      .mission-anchor, .value-step, .mission,
-      .risk-alert, details.panel, .biz-section,
-      .review-work-item, .topic-detail, .nh-card, .link-card {
+      .risk-alert, .mission, .nh-card, .link-card {
         animation: none;
         box-shadow: none;
         break-inside: avoid;
       }
 
-      /* Keep grid rows together when possible */
-      .kpi-row, .grid-2, .grid-3, .grid-4,
-      .biz-grid, .timeline, .mission-grid {
+      /* Panels — keep summary + body together when possible */
+      details.panel {
+        box-shadow: none;
         break-inside: avoid;
       }
-
-      /* Keep table rows together */
-      table tr { break-inside: avoid; }
-      table thead { display: table-header-group; }
-
-      /* Ensure collapsed panels are open in print */
       details.panel:not([open]) .detail-body { display: block; }
       details.panel summary::after { content: none; }
+
+      /* Let biz-sections and large grids split naturally across pages */
+      .biz-section { box-shadow: none; }
+
+      /* Small grids (2-3 cards) stay together; large ones can split */
+      .kpi-row { break-inside: avoid; }
+
+      /* Table print behavior */
+      table { box-shadow: none; }
+      table tr { break-inside: avoid; }
+      table thead { display: table-header-group; }
 
       /* Hero — compact in print */
       .hero { border-bottom: 2px solid var(--line); }
