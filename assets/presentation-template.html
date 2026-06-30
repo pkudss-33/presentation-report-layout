@@ -621,10 +621,9 @@
     }
 
     @media print {
-      /* Page setup — landscape gives room for 1180px content */
       @page {
-        size: landscape;
-        margin: 12mm 10mm 12mm 10mm;
+        size: A4;
+        margin: 14mm 12mm 14mm 12mm;
       }
 
       /* Force color & background rendering */
@@ -633,32 +632,36 @@
         print-color-adjust: exact !important;
       }
 
-      /* Hide interactive-only elements */
-      .progress, .chapter-tabs, .quick-nav, .pill-row { display: none; }
+      /* Un-hide ALL sections for print — override view-switching */
+      main[data-active-view="[[VIEW_1_KEY]]"] section[data-view]:not([data-view="[[VIEW_1_KEY]]"]),
+      main[data-active-view="[[VIEW_2_KEY]]"] section[data-view]:not([data-view="[[VIEW_2_KEY]]"]),
+      main[data-active-view="[[VIEW_3_KEY]]"] section[data-view]:not([data-view="[[VIEW_3_KEY]]"]) {
+        display: block !important;
+      }
 
-      /* Clean page background */
+      /* Hide interactive-only elements */
+      .progress, .chapter-tabs, .quick-nav, .pill-row { display: none !important; }
+
+      /* Clean page */
       body {
         background: #fff;
         background-image: none;
       }
 
-      /* Sections flow naturally — no forced page break on every section */
+      /* All sections visible, flowing naturally */
       section {
-        padding: 14px 0;
+        display: block !important;
+        padding: 5px 0;
         animation: none;
-        border-bottom: 0;
+        border-bottom: 1px dotted var(--line-light);
       }
 
-      /* Page break before each h2 (natural topic boundary) */
-      h2 {
-        break-before: page;
-        break-after: avoid;
-      }
-      section:first-of-type h2 { break-before: avoid; }
+      /* Headings — avoid orphans */
+      h2 { break-after: avoid; }
       h3 { break-after: avoid; }
       h4 { break-after: avoid; }
 
-      /* Individual cards and small blocks — don't split */
+      /* Individual cards & small blocks — keep intact */
       .card, .b-card, .biz-box, .kpi-card, .step,
       .risk-alert, .mission, .nh-card, .link-card {
         animation: none;
@@ -666,31 +669,29 @@
         break-inside: avoid;
       }
 
-      /* Panels — keep summary + body together when possible */
+      /* Panels — force open, keep together */
       details.panel {
         box-shadow: none;
         break-inside: avoid;
       }
-      details.panel:not([open]) .detail-body { display: block; }
+      details.panel:not([open]) .detail-body { display: block !important; }
       details.panel summary::after { content: none; }
 
-      /* Let biz-sections and large grids split naturally across pages */
+      /* Grids and biz-sections — let them flow */
       .biz-section { box-shadow: none; }
-
-      /* Small grids (2-3 cards) stay together; large ones can split */
       .kpi-row { break-inside: avoid; }
 
-      /* Table print behavior */
+      /* Tables */
       table { box-shadow: none; }
       table tr { break-inside: avoid; }
       table thead { display: table-header-group; }
 
-      /* Hero — compact in print */
+      /* Hero — compact */
       .hero { border-bottom: 2px solid var(--line); }
-      .hero-inner { padding: 28px 0 24px; }
+      .hero-inner { padding: 20px 0 10px; }
       .hero::after { background: none; }
 
-      /* Remove sticky positioning */
+      /* Remove sticky */
       .biz-title { position: static; }
     }
   </style>

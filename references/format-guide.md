@@ -528,16 +528,19 @@ via browser Print → Save as PDF. Key design decisions:
 ```
 
 **Page break strategy:**
-- `h2` triggers a new page (`break-before: page`) — natural topic boundary
-- First `h2` in the document skips the break (follows hero naturally)
-- Sections flow naturally — content can span multiple pages within one view
+- No forced page breaks — browser paginates naturally
 - Individual cards/kpi-cards/panels use `break-inside: avoid` (never torn)
 - Large containers (biz-section, grid-3, grid-4) can split across pages
-- Only `.kpi-row` stays together (small, 3-5 items) 
+- Only `.kpi-row` stays together (small, 3-5 items)
+
+**Critical: override view-switching for print**
+The screen layout uses `main[data-active-view]` to show/hide sections. Print must
+override ALL of these selectors with `display: block !important` so every section
+prints regardless of which tab is active on screen.
 
 **Layout preservation:**
-- Landscape orientation preserves the 1180px content width without scaling
-- 10-12mm margins keep reasonable whitespace
+- A4 portrait — content wraps naturally to the 1180px max-width
+- 12-14mm margins
 - `print-color-adjust: exact` preserves the semantic color system
 - Grid proportions unchanged — no reflow, no column collapse
 - Shadows removed (don't print well), borders remain
